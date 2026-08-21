@@ -2,9 +2,18 @@
 
 A concept doc for a generative, mood-based ambient music system built for tabletop RPG sessions. Grows out of the GDMS (Goblinoid Dungeon Mastery System) project family. Three planned platforms, one shared musical/data philosophy.
 
-Status: **Jukebox mode (v1) is built and live.** Advanced mode and Bank/Recycler mode are still concept-only — see "Interaction Tiers" below.
+Status: **Jukebox mode (v2) is built and live.** Advanced mode and Bank/Recycler mode are still concept-only — see "Interaction Tiers" below.
 
 **Play it:** https://coolguyalex.github.io/GoblinoidDungeonSynthSystem/ — pick a mood (1-8), hit play. Single-key hotkeys throughout (no Ctrl-combos); press `H` for the full list. Source: `index.html` + `/js` (Web Audio, zero dependencies) + `/moods` and `/structure` (the actual musical data, plain CSV, edit with a text editor).
+
+### v2 revision (playtester pass)
+
+Direct feedback from the first real playtest reshaped several things:
+
+- **Pseudo-DJ transport.** Tracks now play the section-sequence once and stop by default (was: loop forever). Loop is an explicit off-by-default toggle, plus Fade In, Fade Out (now), and Fade Out At Cycle End (graceful stop while looping) — `L` / `I` / `F` / `E` on the playing screen.
+- **Reseed + save takes.** `R` rerolls a fresh generated take of the current mood without leaving it; `K` pins the exact take (mood + RNG seed) to a "saved takes" screen (`V`) so a specific take that nailed a moment can be replayed later.
+- **Bass / Chords / Melody.** The generator now has a real three-voice texture — the `chords` voice can hold true stacked-note chords (`degrees` supports `a+b` chord tokens, e.g. `0+4`), not just a second melodic line. Kept deliberately conservative (mostly dyads, not full triads) to stay intelligible on small speakers and, eventually, a piezo buzzer.
+- **Per-mood rework**, based on direct feedback: Dungeon/Graveyard sped up and de-mudded (was reading as a funeral dirge, not tomb-tense anxiety); Wilderness lost its percussive pulse voice in favor of long sustained tones plus a Web Audio vibrato LFO; Combat (Boss) gained a sudden mid-track "break" section — the drive drops out for a high operatic melodic contrast before slamming back in; Triumph/Opening widened its range and swapped square-wave for triangle/sawtooth for an epic rather than "tinker-toy" feel; Town was rebuilt around an actual hurdy-gurdy model (a true drone dyad, a buzzing "trompette" chord voice, an original jig-style tune). Combat (Routine) was left untouched — it was already working. Full reasoning lives in the `v2 revision note` comment at the top of each mood's CSV.
 
 ---
 
@@ -35,13 +44,13 @@ These are the rules the generator should encode per mood, not leave to chance:
 
 | Mood | Character | Notes |
 |---|---|---|
-| Dungeon / Graveyard | Tense, claustrophobic | Narrow range, minor 2nds/tritones, minimal leaps |
-| Wilderness | Tense, open | Wider spacing, open 4ths/5ths — "vast and unknown" vs. "threatening" |
-| Combat (routine) | Driving, repetitive | Short motif, rhythmic urgency over harmonic complexity |
-| Combat (boss) | Driving, dramatic | Same rhythmic drive, wider melodic range, bigger leaps |
-| Triumph / Opening | Major, rising, resolved | Arpeggiated contour, forced strong cadence (RuneScape/fanfare reference) |
-| Town | Hurdy-gurdy drone | One voice holds a sustained drone note; others move over it (Witcher-esque) |
-| Tavern | Irish traditional | Dotted rhythms, modal (Dorian/Mixolydian), distinct from strict major/minor moods |
+| Dungeon / Graveyard | Anxious, alert — not grieving | Narrow range, locrian minor 2nds/tritones, brisk and clipped, chord-voice dissonant "stabs" |
+| Wilderness | Open, spacious | Long sustained bass/chord tones (no percussion voice), open 4ths/5ths, lead vibrato |
+| Combat (routine) | Driving, repetitive | Short motif, rhythmic urgency over harmonic complexity — the reference pattern, untouched in v2 |
+| Combat (boss) | Driving, then operatic | Constant drive breaks suddenly into a high, resolved melodic contrast section, then resumes |
+| Triumph / Opening | Epic, resolved, not driving | Wide sweeping contour and register, no percussion voice — grand rather than bouncy |
+| Town | Literal hurdy-gurdy | True drone dyad (tonic+5th) in bass, buzzing "trompette" chord stabs, original jig-style tune |
+| Tavern | Irish traditional | Dotted rhythms, modal (Dorian), distinct from strict major/minor moods |
 | Camp / Downtime | Sparse, slow | Long note durations, wide silences, minimal motif — the "anti-combat" mood |
 
 Several of these share an underlying generator template with different parameters (e.g., dungeon and wilderness are both "tense" but differ in leap-width and register) — not eight separate systems.

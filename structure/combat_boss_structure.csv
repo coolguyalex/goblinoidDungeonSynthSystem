@@ -1,31 +1,48 @@
-# GDSS structure data — see structure/dungeon_structure.csv for full schema notes.
+# GDSS structure data. Rows tagged by `type`:
+#   section_sequence  section,bars,next        - "bars" = beat-units for this generator (not strict 4/4 measures)
+#   voice_activity    section,voice_id,active  - which voices play during each section
+#   cadence_map       section_end,cadence_type - forces the LAST note/chord of that section toward resolved/unresolved
+# 'break' is new in v2: a sudden drop-out of the driving pulse into a big, high,
+# resolved melodic contrast section (the 'solo' voice), before B slams the drive back in.
 type,section,bars,next,voice_id,active,section_end,cadence_type
-section_sequence,intro,4,A,,,,
+section_sequence,intro,8,A,,,,
 section_sequence,A,16,A-variation,,,,
-section_sequence,A-variation,16,B,,,,
+section_sequence,A-variation,16,break,,,,
+section_sequence,break,12,B,,,,
 section_sequence,B,16,fade,,,,
-section_sequence,fade,4,,,,,
+section_sequence,fade,8,,,,,
 voice_activity,intro,,,bass,1,,
-voice_activity,intro,,,mid,0,,
+voice_activity,intro,,,chords,0,,
 voice_activity,intro,,,lead,1,,
 voice_activity,intro,,,rhythm,0,,
+voice_activity,intro,,,solo,0,,
 voice_activity,A,,,bass,1,,
-voice_activity,A,,,mid,1,,
+voice_activity,A,,,chords,1,,
 voice_activity,A,,,lead,1,,
 voice_activity,A,,,rhythm,1,,
+voice_activity,A,,,solo,0,,
 voice_activity,A-variation,,,bass,1,,
-voice_activity,A-variation,,,mid,1,,
+voice_activity,A-variation,,,chords,1,,
 voice_activity,A-variation,,,lead,1,,
 voice_activity,A-variation,,,rhythm,1,,
+voice_activity,A-variation,,,solo,0,,
+voice_activity,break,,,bass,1,,
+voice_activity,break,,,chords,1,,
+voice_activity,break,,,lead,1,,
+voice_activity,break,,,rhythm,0,,
+voice_activity,break,,,solo,1,,
 voice_activity,B,,,bass,1,,
-voice_activity,B,,,mid,1,,
+voice_activity,B,,,chords,1,,
 voice_activity,B,,,lead,1,,
 voice_activity,B,,,rhythm,1,,
+voice_activity,B,,,solo,0,,
 voice_activity,fade,,,bass,1,,
-voice_activity,fade,,,mid,0,,
-voice_activity,fade,,,lead,0,,
-voice_activity,fade,,,rhythm,1,,
+voice_activity,fade,,,chords,1,,
+voice_activity,fade,,,lead,1,,
+voice_activity,fade,,,rhythm,0,,
+voice_activity,fade,,,solo,0,,
 cadence_map,,,,,,A,unresolved
 cadence_map,,,,,,A-variation,unresolved
+cadence_map,,,,,,break,resolved
 cadence_map,,,,,,B,unresolved
 cadence_map,,,,,,fade,unresolved

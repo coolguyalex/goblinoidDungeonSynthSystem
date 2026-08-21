@@ -1,31 +1,48 @@
-# GDSS mood data — see moods/dungeon.csv for full schema notes.
-# Town's "hurdy-gurdy drone" character comes from data, not special-case code: the
-# bass voice's seed motifs are a single held tonic note spanning the whole section.
-type,key,value,degree,weight_strong,weight_weak,max_leap,resolve_direction,voice,low_note,high_note,waveform,gain,motif_id,section,degrees,rhythm
-meta,tonic,G2,,,,,,,,,,,,,,
-meta,mode,mixolydian,,,,,,,,,,,,,,
-meta,tempo,84,,,,,,,,,,,,,,
-meta,tension_degree,6,,,,,,,,,,,,,,
-meta,contour,0|2|3|2|0,,,,,,,,,,,,,,
-leap_rule,,,,,,3,opposite,,,,,,,,,
-interval_weight,,,0,26,16,,,,,,,,,,,
-interval_weight,,,1,10,14,,,,,,,,,,,
-interval_weight,,,2,18,16,,,,,,,,,,,
-interval_weight,,,3,12,14,,,,,,,,,,,
-interval_weight,,,4,20,16,,,,,,,,,,,
-interval_weight,,,5,6,12,,,,,,,,,,,
-interval_weight,,,6,8,12,,,,,,,,,,,
-register,,,,,,,,bass,G1,D2,sine,0.30,,,,
-register,,,,,,,,mid,G2,D3,triangle,0.13,,,,
-register,,,,,,,,lead,G3,D4,triangle,0.16,,,,
-register,,,,,,,,rhythm,G3,G4,square,0.05,,,,
-seed_motif,,,,,,,,bass,,,,,b1,intro,0,8
-seed_motif,,,,,,,,bass,,,,,b2,A,0,16
-seed_motif,,,,,,,,bass,,,,,b3,B,0,16
-seed_motif,,,,,,,,mid,,,,,m1,A,0|2|3|2|0|2,1|1|1|1|1|1
-seed_motif,,,,,,,,mid,,,,,m2,B,4|3|2|0|2|4,1|1|1|1|1|2
-seed_motif,,,,,,,,lead,,,,,l1,intro,R|R|0|2,2|2|2|2
-seed_motif,,,,,,,,lead,,,,,l2,A,0|2|4|3|2|0,1|1|1|1|1|2
-seed_motif,,,,,,,,lead,,,,,l3,B,4|6|4|2|0,1|1|1|2|3
-seed_motif,,,,,,,,rhythm,,,,,r1,A,0|R|R|R,1|3|3|3
-seed_motif,,,,,,,,rhythm,,,,,r2,B,0|R|R|R|R,1|4|4|4|3
+# GDSS mood data. One flat CSV per mood, rows tagged by `type`:
+#   meta            key,value            - tonic note, mode, tempo (bpm), tension_degree, contour
+#   leap_rule       max_leap,resolve_direction
+#   interval_weight degree,weight_strong,weight_weak   (degree 0-6 within the mode)
+#   register        voice,low_note,high_note,waveform,gain,vibrato_rate,vibrato_depth
+#                     (vibrato_rate Hz / vibrato_depth cents - both blank/0 = no vibrato)
+#   seed_motif      voice,motif_id,section,degrees,rhythm   (degrees/rhythm are |-separated;
+#                     degree "R" = rest, degree "a+b" = a chord: two+ degrees sounded together)
+# Voices: bass / chords / lead are the core Bass-Chords-Melody trio; rhythm is an optional
+# 4th percussive/pulse layer, and moods may declare extra voices (see combat_boss's 'solo').
+# Edit freely with a text editor - no rebuild required.
+#
+# v2 revision note: v1 was basically the graveyard track minus the minor key - bland,
+# uncommitted. Rebuilt around an actual hurdy-gurdy model: bass holds a true drone DYAD
+# (tonic+5th, sustained the whole section - the instrument's drone strings), chords
+# becomes the 'trompette' - short buzzy rhythmic stabs on the tonic (the bridge that
+# mechanically buzzes in time with the crank), and lead carries an original jig-style
+# tune (built from short repeating 2-bar dance cells, not a transcription of any real
+# tune - inspired by the phrasing of trad jigs like "Swallowtail Jig", not a copy of one).
+# Sawtooth waveforms throughout give the buzzy, reedy hurdy-gurdy timbre.
+type,key,value,degree,weight_strong,weight_weak,max_leap,resolve_direction,voice,low_note,high_note,waveform,gain,vibrato_rate,vibrato_depth,motif_id,section,degrees,rhythm
+meta,tonic,G2,,,,,,,,,,,,,,,,
+meta,mode,mixolydian,,,,,,,,,,,,,,,,
+meta,tempo,116,,,,,,,,,,,,,,,,
+meta,tension_degree,6,,,,,,,,,,,,,,,,
+meta,contour,0|2|4|2|0,,,,,,,,,,,,,,,,
+leap_rule,,,,,,3,opposite,,,,,,,,,,,
+interval_weight,,,0,26,16,,,,,,,,,,,,,
+interval_weight,,,1,10,14,,,,,,,,,,,,,
+interval_weight,,,2,18,16,,,,,,,,,,,,,
+interval_weight,,,3,12,14,,,,,,,,,,,,,
+interval_weight,,,4,22,17,,,,,,,,,,,,,
+interval_weight,,,5,6,12,,,,,,,,,,,,,
+interval_weight,,,6,8,13,,,,,,,,,,,,,
+register,,,,,,,,bass,G1,D2,sawtooth,0.16,,,,,,
+register,,,,,,,,chords,G2,D3,sawtooth,0.10,7,20,,,,
+register,,,,,,,,lead,G3,G4,sawtooth,0.15,,,,,,
+register,,,,,,,,rhythm,G3,G4,square,0.06,,,,,,
+seed_motif,,,,,,,,bass,,,,,,,b1,intro,0+4,8
+seed_motif,,,,,,,,bass,,,,,,,b2,A,0+4,16
+seed_motif,,,,,,,,bass,,,,,,,b3,B,0+4,16
+seed_motif,,,,,,,,chords,,,,,,,m1,A,0|0|0+4|0,1|1|1|1
+seed_motif,,,,,,,,chords,,,,,,,m2,B,0|0|0|0+4,0.5|0.5|0.5|0.5
+seed_motif,,,,,,,,lead,,,,,,,l1,intro,R|R|0|2,2|2|1|1
+seed_motif,,,,,,,,lead,,,,,,,l2,A,0|2|4|3|2|0,1|0.5|0.5|1|1|2
+seed_motif,,,,,,,,lead,,,,,,,l3,B,4|3|2|4|6|4,0.75|0.75|1|0.75|0.75|1
+seed_motif,,,,,,,,rhythm,,,,,,,r1,A,0|R|0|R,1|1|1|1
+seed_motif,,,,,,,,rhythm,,,,,,,r2,B,0|R|0|0,1|1|0.5|0.5

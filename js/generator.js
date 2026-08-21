@@ -11,7 +11,15 @@
 import { degreeToMidi, fitToRegister, weightedPick } from './theory.js';
 
 function cloneMotif(m) {
-  return { ...m, degrees: [...m.degrees], rhythm: [...m.rhythm] };
+  return { ...m, degrees: m.degrees.map((d) => (Array.isArray(d) ? [...d] : d)), rhythm: [...m.rhythm] };
+}
+
+// A degree is 'R' (rest), a number (single note), or an array (a chord — several
+// degrees stacked and sounded together, see moodLoader's parseDegreeToken).
+function transposeDegree(d, semitoneDegrees) {
+  if (d === 'R') return 'R';
+  if (Array.isArray(d)) return d.map((x) => x + semitoneDegrees);
+  return d + semitoneDegrees;
 }
 
 function findMotif(mood, voice, sectionName) {
@@ -25,7 +33,7 @@ function findMotif(mood, voice, sectionName) {
   hit = list.find((m) => m.section === baseName);
   if (hit) {
     const varied = cloneMotif(hit);
-    varied.degrees = varied.degrees.map((d) => (d === 'R' ? 'R' : d + 2));
+    varied.degrees = varied.degrees.map((d) => transposeDegree(d, 2));
     return varied;
   }
 
@@ -56,11 +64,12 @@ function contourTargetAt(mood, idx, total) {
 
 // Rule 2: leap-then-step resolution. Walk the sequence; whenever a jump exceeds
 // maxLeap, force the following note to move one step back in the opposite direction.
+// Chords (arrays) aren't melodic runs, so they're skipped rather than leap-checked.
 function resolveLeaps(degrees, maxLeap) {
   for (let i = 1; i < degrees.length; i++) {
     const prev = degrees[i - 1];
     const cur = degrees[i];
-    if (prev === 'R' || cur === 'R') continue;
+    if (prev === 'R' || cur === 'R' || Array.isArray(prev) || Array.isArray(cur)) continue;
     const leap = cur - prev;
     if (Math.abs(leap) > maxLeap && i + 1 < degrees.length && degrees[i + 1] !== 'R') {
       const dir = leap > 0 ? -1 : 1;
@@ -70,17 +79,26 @@ function resolveLeaps(degrees, maxLeap) {
   return degrees;
 }
 
+// Forces the final note/chord of a section toward resolved (tonic) or unresolved
+// (the mood's tension degree). For a chord, the interval shape between its stacked
+// degrees is preserved and the whole shape is shifted so its root lands on target —
+// so a forced cadence still resolves as a chord, not a single stray note.
 function applyCadence(degrees, rhythm, mood, cadenceType) {
   if (!cadenceType || degrees.length === 0) return;
   const lastIdx = degrees.length - 1;
-  if (cadenceType === 'resolved') {
-    degrees[lastIdx] = 0; // tonic
-    rhythm[lastIdx] = rhythm[lastIdx] * 1.5;
-  } else if (cadenceType === 'unresolved') {
-    const tension = mood.meta.tension_degree !== undefined ? parseInt(mood.meta.tension_degree, 10) : 1;
-    degrees[lastIdx] = tension;
-    rhythm[lastIdx] = Math.max(0.5, rhythm[lastIdx] * 0.6);
+  const last = degrees[lastIdx];
+  if (last === 'R') return;
+  const target = cadenceType === 'resolved'
+    ? 0
+    : (mood.meta.tension_degree !== undefined ? parseInt(mood.meta.tension_degree, 10) : 1);
+
+  if (Array.isArray(last)) {
+    const shape = last.map((d) => d - last[0]);
+    degrees[lastIdx] = shape.map((s) => target + s);
+  } else {
+    degrees[lastIdx] = target;
   }
+  rhythm[lastIdx] = cadenceType === 'resolved' ? rhythm[lastIdx] * 1.5 : Math.max(0.5, rhythm[lastIdx] * 0.6);
 }
 
 function beatsOf(rhythm) {
@@ -103,7 +121,11 @@ function generatePhrase(mood, voice, sectionName, lengthBeats, cadenceType, rng)
     // extreme, biased by the mood's weighted degrees for this voice's register.
     if (repeatCount > 0 && rep.degrees.length > 1) {
       const idx = repeatCount % rep.degrees.length;
-      if (rep.degrees[idx] !== 'R') {
+      // Chords aren't nudged note-by-note (that would produce arbitrary, possibly
+      // dissonant stacks) — they restate identically, which reads as harmonic
+      // stability under a moving/varying melody, exactly the role a chord layer
+      // should play.
+      if (rep.degrees[idx] !== 'R' && !Array.isArray(rep.degrees[idx])) {
         const strong = idx % 2 === 0;
         const target = contourTargetAt(mood, degrees.length + idx, degrees.length + rep.degrees.length + 4);
         rep.degrees[idx] = pickWeightedDegree(mood, strong, target, rng);
@@ -135,10 +157,19 @@ function generatePhrase(mood, voice, sectionName, lengthBeats, cadenceType, rng)
   return { degrees, rhythm };
 }
 
+// Chord arrays fit their ROOT to the register, then shift every other stacked note
+// by the same octave offset — keeps the chord's voicing intact instead of each note
+// independently jumping to whatever octave is closest to register-center.
 function degreesToMidi(mood, voice, degrees) {
   const reg = mood.registers[voice];
   return degrees.map((d) => {
     if (d === 'R') return null;
+    if (Array.isArray(d)) {
+      const rawRoot = degreeToMidi(mood.meta.tonicMidi, mood.meta.scale, d[0]);
+      const fittedRoot = reg ? fitToRegister(rawRoot, reg.low, reg.high) : rawRoot;
+      const shift = fittedRoot - rawRoot;
+      return d.map((deg) => degreeToMidi(mood.meta.tonicMidi, mood.meta.scale, deg) + shift);
+    }
     const raw = degreeToMidi(mood.meta.tonicMidi, mood.meta.scale, d);
     return reg ? fitToRegister(raw, reg.low, reg.high) : raw;
   });
@@ -168,7 +199,13 @@ export function generatePiece(mood, structure, rng = Math.random) {
       const midis = degreesToMidi(mood, voice, degrees);
       let t = cursorBeat;
       for (let i = 0; i < midis.length; i++) {
-        events.push({ voice, startBeat: t, durBeat: rhythm[i], midi: midis[i] });
+        const m = midis[i];
+        if (Array.isArray(m)) {
+          // Chord: fan out into simultaneous mono note-events at the same start/duration.
+          for (const note of m) events.push({ voice, startBeat: t, durBeat: rhythm[i], midi: note });
+        } else {
+          events.push({ voice, startBeat: t, durBeat: rhythm[i], midi: m });
+        }
         t += rhythm[i];
       }
     }

@@ -1,4 +1,7 @@
-# GDSS structure data — see structure/dungeon_structure.csv for full schema notes.
+# GDSS structure data. Rows tagged by `type`:
+#   section_sequence  section,bars,next        - "bars" = beat-units for this generator (not strict 4/4 measures)
+#   voice_activity    section,voice_id,active  - which voices play during each section
+#   cadence_map       section_end,cadence_type - forces the LAST note/chord of that section toward resolved/unresolved
 # rhythm voice_id is active=0 in every section on purpose: camp has no pulse voice.
 type,section,bars,next,voice_id,active,section_end,cadence_type
 section_sequence,intro,8,A,,,,
@@ -7,23 +10,23 @@ section_sequence,A-variation,24,B,,,,
 section_sequence,B,24,fade,,,,
 section_sequence,fade,8,,,,,
 voice_activity,intro,,,bass,1,,
-voice_activity,intro,,,mid,0,,
+voice_activity,intro,,,chords,0,,
 voice_activity,intro,,,lead,1,,
 voice_activity,intro,,,rhythm,0,,
 voice_activity,A,,,bass,1,,
-voice_activity,A,,,mid,1,,
+voice_activity,A,,,chords,1,,
 voice_activity,A,,,lead,1,,
 voice_activity,A,,,rhythm,0,,
 voice_activity,A-variation,,,bass,1,,
-voice_activity,A-variation,,,mid,1,,
+voice_activity,A-variation,,,chords,1,,
 voice_activity,A-variation,,,lead,1,,
 voice_activity,A-variation,,,rhythm,0,,
 voice_activity,B,,,bass,1,,
-voice_activity,B,,,mid,1,,
+voice_activity,B,,,chords,1,,
 voice_activity,B,,,lead,1,,
 voice_activity,B,,,rhythm,0,,
 voice_activity,fade,,,bass,1,,
-voice_activity,fade,,,mid,0,,
+voice_activity,fade,,,chords,0,,
 voice_activity,fade,,,lead,0,,
 voice_activity,fade,,,rhythm,0,,
 cadence_map,,,,,,A,resolved

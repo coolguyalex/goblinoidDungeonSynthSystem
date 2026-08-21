@@ -1,29 +1,51 @@
-# GDSS mood data — see moods/dungeon.csv for full schema notes.
-type,key,value,degree,weight_strong,weight_weak,max_leap,resolve_direction,voice,low_note,high_note,waveform,gain,motif_id,section,degrees,rhythm
-meta,tonic,C2,,,,,,,,,,,,,,
-meta,mode,harmonic_minor,,,,,,,,,,,,,,
-meta,tempo,132,,,,,,,,,,,,,,
-meta,tension_degree,6,,,,,,,,,,,,,,
-meta,contour,0|4|6|4|0,,,,,,,,,,,,,,
-leap_rule,,,,,,5,opposite,,,,,,,,,
-interval_weight,,,0,26,16,,,,,,,,,,,
-interval_weight,,,1,8,12,,,,,,,,,,,
-interval_weight,,,2,16,14,,,,,,,,,,,
-interval_weight,,,3,10,12,,,,,,,,,,,
-interval_weight,,,4,20,16,,,,,,,,,,,
-interval_weight,,,5,8,12,,,,,,,,,,,
-interval_weight,,,6,12,18,,,,,,,,,,,
-register,,,,,,,,bass,C1,G1,sine,0.32,,,,
-register,,,,,,,,mid,C2,G2,sawtooth,0.14,,,,
-register,,,,,,,,lead,C3,C5,sawtooth,0.18,,,,
-register,,,,,,,,rhythm,C3,C4,square,0.13,,,,
-seed_motif,,,,,,,,bass,,,,,b1,intro,0|0|0,3|3|2
-seed_motif,,,,,,,,bass,,,,,b2,A,0|4|0|4,1|1|1|1
-seed_motif,,,,,,,,bass,,,,,b3,B,0|R|4|0,1|1|1|2
-seed_motif,,,,,,,,mid,,,,,m1,A,0|2|4|2,0.5|0.5|0.5|0.5
-seed_motif,,,,,,,,mid,,,,,m2,B,4|6|4|0,0.5|0.5|1|1
-seed_motif,,,,,,,,lead,,,,,l1,intro,R|0|4,2|1|1
-seed_motif,,,,,,,,lead,,,,,l2,A,0|4|7|4|0,0.5|0.5|1|0.5|0.5
-seed_motif,,,,,,,,lead,,,,,l3,B,0|6|4|0,1|1|1|1
-seed_motif,,,,,,,,rhythm,,,,,r1,A,0|0|4|4,0.5|0.5|0.5|0.5
-seed_motif,,,,,,,,rhythm,,,,,r2,B,0|0|0|0,0.5|0.5|0.5|0.5
+# GDSS mood data. One flat CSV per mood, rows tagged by `type`:
+#   meta            key,value            - tonic note, mode, tempo (bpm), tension_degree, contour
+#   leap_rule       max_leap,resolve_direction
+#   interval_weight degree,weight_strong,weight_weak   (degree 0-6 within the mode)
+#   register        voice,low_note,high_note,waveform,gain,vibrato_rate,vibrato_depth
+#                     (vibrato_rate Hz / vibrato_depth cents - both blank/0 = no vibrato)
+#   seed_motif      voice,motif_id,section,degrees,rhythm   (degrees/rhythm are |-separated;
+#                     degree "R" = rest, degree "a+b" = a chord: two+ degrees sounded together)
+# Voices: bass / chords / lead are the core Bass-Chords-Melody trio; rhythm is an optional
+# 4th percussive/pulse layer, and moods may declare extra voices (see combat_boss's 'solo').
+# Edit freely with a text editor - no rebuild required.
+#
+# v2 revision note: A/A-variation/B/fade content is untouched (the driving Tetris-like
+# feel was working) - the fix for "too structurally similar to routine combat" is a new
+# 'break' section (see structure file) where the pulse drops out entirely and a high
+# 'solo' voice (a voice this mood alone declares - the engine keys voices off whatever
+# registers exist per-mood, no code change needed) carries a big operatic melody above
+# the lead line before the drive slams back in for B.
+type,key,value,degree,weight_strong,weight_weak,max_leap,resolve_direction,voice,low_note,high_note,waveform,gain,vibrato_rate,vibrato_depth,motif_id,section,degrees,rhythm
+meta,tonic,C2,,,,,,,,,,,,,,,,
+meta,mode,harmonic_minor,,,,,,,,,,,,,,,,
+meta,tempo,132,,,,,,,,,,,,,,,,
+meta,tension_degree,6,,,,,,,,,,,,,,,,
+meta,contour,0|4|6|4|0,,,,,,,,,,,,,,,,
+leap_rule,,,,,,5,opposite,,,,,,,,,,,
+interval_weight,,,0,26,16,,,,,,,,,,,,,
+interval_weight,,,1,8,12,,,,,,,,,,,,,
+interval_weight,,,2,16,14,,,,,,,,,,,,,
+interval_weight,,,3,10,12,,,,,,,,,,,,,
+interval_weight,,,4,20,16,,,,,,,,,,,,,
+interval_weight,,,5,8,12,,,,,,,,,,,,,
+interval_weight,,,6,12,18,,,,,,,,,,,,,
+register,,,,,,,,bass,C1,G1,sine,0.32,,,,,,
+register,,,,,,,,chords,C2,G2,sawtooth,0.14,,,,,,
+register,,,,,,,,lead,C3,C5,sawtooth,0.18,,,,,,
+register,,,,,,,,rhythm,C3,C4,square,0.13,,,,,,
+register,,,,,,,,solo,C4,C6,triangle,0.16,,,,,,
+seed_motif,,,,,,,,bass,,,,,,,b1,intro,0|0|0,3|3|2
+seed_motif,,,,,,,,bass,,,,,,,b2,A,0|4|0|4,1|1|1|1
+seed_motif,,,,,,,,bass,,,,,,,b3,B,0|R|4|0,1|1|1|2
+seed_motif,,,,,,,,bass,,,,,,,b4,break,0,12
+seed_motif,,,,,,,,chords,,,,,,,m1,A,0|2|4|2,0.5|0.5|0.5|0.5
+seed_motif,,,,,,,,chords,,,,,,,m2,B,4|6|4|0,0.5|0.5|1|1
+seed_motif,,,,,,,,chords,,,,,,,m3,break,0+4|3+6,6|6
+seed_motif,,,,,,,,lead,,,,,,,l1,intro,R|0|4,2|1|1
+seed_motif,,,,,,,,lead,,,,,,,l2,A,0|4|7|4|0,0.5|0.5|1|0.5|0.5
+seed_motif,,,,,,,,lead,,,,,,,l3,B,0|6|4|0,1|1|1|1
+seed_motif,,,,,,,,lead,,,,,,,l4,break,0|4|7|6|4|0,2|2|2|2|2|2
+seed_motif,,,,,,,,rhythm,,,,,,,r1,A,0|0|4|4,0.5|0.5|0.5|0.5
+seed_motif,,,,,,,,rhythm,,,,,,,r2,B,0|0|0|0,0.5|0.5|0.5|0.5
+seed_motif,,,,,,,,solo,,,,,,,s1,break,7|11|13|11|7,2|3|2|3|2

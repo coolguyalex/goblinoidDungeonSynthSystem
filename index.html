@@ -32,6 +32,7 @@
       <span>[1-8] play mood</span>
       <span>[&uarr;/&darr;] highlight</span>
       <span>[ENTER] play highlighted</span>
+      <span>[V] saved takes</span>
       <span>[H] help</span>
     </div>
   </section>
@@ -47,11 +48,35 @@
       <div class="volume-bar"><div class="volume-fill" id="volume-fill"></div></div>
     </div>
 
+    <div class="transport-row">
+      <span id="loop-indicator">LOOP: OFF</span>
+      <span id="flash-msg" class="flash-msg"></span>
+    </div>
+
     <div class="footer-bar">
-      <span>[SPACE] pause/resume</span>
+      <span>[SPACE] play/pause</span>
       <span>[1-8] switch mood</span>
       <span>[+/-] volume</span>
+      <span>[R] reseed</span>
+      <span>[K] keep take</span>
+      <span>[L] loop</span>
+      <span>[I] fade in</span>
+      <span>[F] fade out</span>
+      <span>[E] fade out @ end</span>
+      <span>[V] saved takes</span>
       <span>[S/ESC] stop</span>
+      <span>[H] help</span>
+    </div>
+  </section>
+
+  <section id="screen-saved" class="screen hidden">
+    <div class="subtitle">SAVED TAKES</div>
+    <div class="mood-grid" id="saved-list"><!-- populated by app.js --></div>
+    <div class="footer-bar">
+      <span>[&uarr;/&darr;] highlight</span>
+      <span>[ENTER] play</span>
+      <span>[D] delete</span>
+      <span>[V/ESC] back</span>
       <span>[H] help</span>
     </div>
   </section>
@@ -63,13 +88,28 @@ HOME SCREEN
   1-8         play that mood immediately
   up/down     move highlight
   enter       play highlighted mood
+  v           saved takes
   h           this screen
 
 PLAYING SCREEN
-  space       pause / resume
+  space       play / pause
   1-8         switch directly to another mood
   +  / -      volume up / down
+  r           reseed — reroll a fresh take of this mood
+  k           keep — save this exact take to replay later
+  l           toggle loop (off by default: plays once, then stops)
+  i           fade in
+  f           fade out now (wraps up the current listen)
+  e           fade out at end of cycle (graceful stop while looping)
+  v           saved takes
   s / esc     stop, return home
+  h           this screen
+
+SAVED TAKES SCREEN
+  up/down     move highlight
+  enter       play the highlighted saved take
+  d           delete the highlighted saved take
+  v / esc     back
   h           this screen
 
 HELP SCREEN
