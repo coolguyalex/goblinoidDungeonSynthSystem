@@ -1,0 +1,71 @@
+GDMS SONICS
+// DATA FILE ARCHITECTURE — HOW A TUNE GETS BUILT
+
+STEP 1 — SELECT
+Mood
+The only decision a DM makes mid-session. Everything downstream is driven by this single choice.
+Dungeon
+Wilderness
+Combat (routine)
+Combat (boss)
+Triumph
+Town
+Tavern
+Camp
+▼
+STEP 2 — VOCABULARY
+/moods/<mood>.csv
+Defines the raw musical "DNA" for the chosen mood — what notes are even allowed, and how they behave.
+interval_weights
+Probability that each scale degree gets picked. Tonic / 3rd / 5th dominate on strong beats — not a flat random draw.
+cols: degree, weight, beat_strength
+leap_rules
+Whether a large interval jump must resolve stepwise, and in which direction.
+cols: max_leap, resolve_direction
+register
+Allowed pitch range. Narrow + low for claustrophobic dungeon; wide + open for wilderness.
+cols: low_note, high_note
+seed_motifs
+3–5 note starting phrases the generator transposes and varies, instead of composing from scratch every time.
+cols: motif_id, notes, rhythm
+▼
+STEP 3 — FORM
+/structure/<mood>_structure.csv
+Prevents one motif looping forever. Defines how the piece unfolds over time — sections, which voices are active, and cadence placement.
+section_sequence
+e.g. intro(8 bars) → A(8) → A-variation(8) → B(8) → fade. Ordered list of named sections.
+cols: section, bars, next
+voice_activity
+Which of the 4 voices play (or drop out / drone) during each section.
+cols: section, voice_id, active
+cadence_map
+Forces phrase endings toward tonic (resolved) or away from it (unresolved/haunting) at specific structural points.
+cols: section_end, cadence_type
+dial_shifts
+Optional: scripted recycle-rate changes over the piece (e.g. drone voice locks in early).
+cols: section, voice_id, dial_value
+▼
+STEP 4 — MEMORY (OPTIONAL / ADVANCED)
+/bank/<mood>_<voice>_bank.csv
+User-curated, generated at runtime — not shipped. When a played motif gets flagged/locked, it's written here and becomes more likely to resurface.
+locked_motifs
+The actual note/interval sequence of each flagged motif.
+cols: motif_id, notes, rhythm
+flag_weight
+Increments each time a motif is re-flagged. Higher weight = more likely to resurface at high dial settings.
+cols: motif_id, weight, last_used
+RUNTIME ASSEMBLY — 4 VOICES
+VOICE 1
+bass / drone
+VOICE 2
+mid / harmony
+VOICE 3
+lead / melody
+VOICE 4
+rhythm / pulse
+Each voice reads the same mood + structure files but keeps its own recycler dial — fresh generation (0) vs. favoring its personal bank (100).
+▼
+TUNE
+A structured, mood-correct, non-looping piece — assembled live from data, not pre-recorded.
+GDMS SONICS — part of the GDMS project family (GDMS · GDMS:Pocket)
+All files are plain CSV — readable, editable, and swappable with a text editor. No rebuild required.
