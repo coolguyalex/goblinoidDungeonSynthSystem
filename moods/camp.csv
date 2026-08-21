@@ -1,0 +1,31 @@
+# GDSS mood data — see moods/dungeon.csv for full schema notes.
+# Camp is deliberately the "anti-combat" mood: the rhythm/pulse voice is defined
+# here for schema completeness but never activated in structure/camp_structure.csv,
+# and every motif leans on long durations + explicit "R" rests for wide silences.
+type,key,value,degree,weight_strong,weight_weak,max_leap,resolve_direction,voice,low_note,high_note,waveform,gain,motif_id,section,degrees,rhythm
+meta,tonic,F3,,,,,,,,,,,,,,
+meta,mode,major,,,,,,,,,,,,,,
+meta,tempo,46,,,,,,,,,,,,,,
+meta,tension_degree,6,,,,,,,,,,,,,,
+meta,contour,0|2|0|4|0,,,,,,,,,,,,,,
+leap_rule,,,,,,4,opposite,,,,,,,,,
+interval_weight,,,0,32,20,,,,,,,,,,,
+interval_weight,,,1,6,10,,,,,,,,,,,
+interval_weight,,,2,20,16,,,,,,,,,,,
+interval_weight,,,3,8,12,,,,,,,,,,,
+interval_weight,,,4,22,18,,,,,,,,,,,
+interval_weight,,,5,6,12,,,,,,,,,,,
+interval_weight,,,6,6,12,,,,,,,,,,,
+register,,,,,,,,bass,F2,C3,sine,0.20,,,,
+register,,,,,,,,mid,F3,C4,triangle,0.10,,,,
+register,,,,,,,,lead,F4,C5,triangle,0.13,,,,
+register,,,,,,,,rhythm,F4,F5,triangle,0.04,,,,
+seed_motif,,,,,,,,bass,,,,,b1,intro,0,8
+seed_motif,,,,,,,,bass,,,,,b2,A,0|R|R|R,4|4|4|4
+seed_motif,,,,,,,,bass,,,,,b3,B,0|R|4|R,4|4|4|4
+seed_motif,,,,,,,,mid,,,,,m1,A,R|R|2|R,4|4|4|4
+seed_motif,,,,,,,,mid,,,,,m2,B,R|4|R|0,4|4|4|4
+seed_motif,,,,,,,,lead,,,,,l1,intro,R|R|R|0,4|4|4|4
+seed_motif,,,,,,,,lead,,,,,l2,A,0|R|R|2|R|R,3|3|3|3|3|3
+seed_motif,,,,,,,,lead,,,,,l3,B,4|R|R|0|R|R,4|4|4|4|4|4
+seed_motif,,,,,,,,rhythm,,,,,r1,A,R,4

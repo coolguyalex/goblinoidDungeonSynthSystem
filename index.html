@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>GDSS — Goblinoid Dungeon Synth System</title>
+<meta name="description" content="GDSS Jukebox — generative mood music for tabletop RPG sessions. Pick a mood, hit play." />
+<link rel="icon" href="data:," />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div id="crt">
+
+  <section id="screen-home" class="screen">
+    <pre class="ascii-title">
+ ▄████  ▓█████▄  ██████   ██████
+▒██▒ ▀█▒▒██▀ ██▌▒██    ▒ ▒██    ▒
+▒██░▄▄▄░░██   █▌░ ▓██▄   ░ ▓██▄
+░▓█  ██▓░▓█▄   ▌  ▒   ██▒  ▒   ██▒
+░▒▓███▀▒░▒████▓ ▒██████▒▒▒██████▒▒
+ ░▒   ▒  ▒▒▓  ▒ ▒ ▒▓▒ ▒ ░▒ ▒▓▒ ▒ ░
+  ░   ░  ░ ▒  ▒ ░ ░▒  ░ ░░ ░▒  ░ ░
+░ ░   ░  ░ ░  ░ ░  ░  ░  ░  ░  ░
+      ░    ░          ░        ░
+           ░
+    </pre>
+    <div class="subtitle">GOBLINOID DUNGEON SYNTH SYSTEM — JUKEBOX MODE</div>
+
+    <div class="mood-grid" id="mood-grid"><!-- populated by app.js --></div>
+
+    <div class="footer-bar">
+      <span>[1-8] play mood</span>
+      <span>[&uarr;/&darr;] highlight</span>
+      <span>[ENTER] play highlighted</span>
+      <span>[H] help</span>
+    </div>
+  </section>
+
+  <section id="screen-playing" class="screen hidden">
+    <div class="now-playing-label">NOW PLAYING</div>
+    <div class="now-playing-mood" id="np-mood">—</div>
+    <div class="now-playing-section" id="np-section">&gt; INTRO</div>
+    <pre class="np-cursor" id="np-cursor">_</pre>
+
+    <div class="volume-row">
+      <span>VOL</span>
+      <div class="volume-bar"><div class="volume-fill" id="volume-fill"></div></div>
+    </div>
+
+    <div class="footer-bar">
+      <span>[SPACE] pause/resume</span>
+      <span>[1-8] switch mood</span>
+      <span>[+/-] volume</span>
+      <span>[S/ESC] stop</span>
+      <span>[H] help</span>
+    </div>
+  </section>
+
+  <section id="screen-help" class="screen hidden">
+    <div class="subtitle">HOTKEYS</div>
+    <pre class="help-text">
+HOME SCREEN
+  1-8         play that mood immediately
+  up/down     move highlight
+  enter       play highlighted mood
+  h           this screen
+
+PLAYING SCREEN
+  space       pause / resume
+  1-8         switch directly to another mood
+  +  / -      volume up / down
+  s / esc     stop, return home
+  h           this screen
+
+HELP SCREEN
+  any key     back
+
+No Ctrl-combos anywhere — single-key only, Nethack/DF style,
+so the browser never steals a keystroke out from under you.
+    </pre>
+    <div class="footer-bar"><span>[any key] back</span></div>
+  </section>
+
+</div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

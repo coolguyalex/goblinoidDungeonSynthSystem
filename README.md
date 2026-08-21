@@ -2,7 +2,9 @@
 
 A concept doc for a generative, mood-based ambient music system built for tabletop RPG sessions. Grows out of the GDMS (Goblinoid Dungeon Mastery System) project family. Three planned platforms, one shared musical/data philosophy.
 
-Status: **concept / pre-build**. This doc exists so the idea doesn't get lost. Nothing here is committed to yet.
+Status: **Jukebox mode (v1) is built and live.** Advanced mode and Bank/Recycler mode are still concept-only — see "Interaction Tiers" below.
+
+**Play it:** https://coolguyalex.github.io/GoblinoidDungeonSynthSystem/ — pick a mood (1-8), hit play. Single-key hotkeys throughout (no Ctrl-combos); press `H` for the full list. Source: `index.html` + `/js` (Web Audio, zero dependencies) + `/moods` and `/structure` (the actual musical data, plain CSV, edit with a text editor).
 
 ---
 
