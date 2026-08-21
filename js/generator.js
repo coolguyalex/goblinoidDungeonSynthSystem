@@ -116,16 +116,25 @@ function generatePhrase(mood, voice, sectionName, lengthBeats, cadenceType, rng)
 
   while (beatsOf(rhythm) < lengthBeats) {
     const rep = cloneMotif(base);
-    // Every repeat after the first gets one light, rule-guided variation instead of
-    // being regenerated: nudge the note closest to the contour target's opposite
-    // extreme, biased by the mood's weighted degrees for this voice's register.
+    // Every repeat after the first gets light, rule-guided variation instead of being
+    // regenerated: nudge roughly half of this repeat's eligible notes, biased by the
+    // mood's weighted degrees for this voice's register. Chords and rests are never
+    // nudged — chords restate identically (harmonic stability under a moving melody,
+    // exactly the role a chord layer should play), and there's nothing to nudge on a
+    // rest. Bug note: an earlier version picked exactly one FIXED index per repeat
+    // (repeatCount % length) with no fallback, so a rest-heavy motif (several v2
+    // moods lean on rests for a sparser feel) could land on an untouchable index every
+    // single time — reseed would silently regenerate an audibly-identical take. Picking
+    // only from eligible indices, and varying more than one of them, fixes that.
     if (repeatCount > 0 && rep.degrees.length > 1) {
-      const idx = repeatCount % rep.degrees.length;
-      // Chords aren't nudged note-by-note (that would produce arbitrary, possibly
-      // dissonant stacks) — they restate identically, which reads as harmonic
-      // stability under a moving/varying melody, exactly the role a chord layer
-      // should play.
-      if (rep.degrees[idx] !== 'R' && !Array.isArray(rep.degrees[idx])) {
+      const eligible = [];
+      for (let i = 0; i < rep.degrees.length; i++) {
+        if (rep.degrees[i] !== 'R' && !Array.isArray(rep.degrees[i])) eligible.push(i);
+      }
+      const varyCount = Math.max(1, Math.round(eligible.length / 2));
+      const pool = [...eligible];
+      for (let k = 0; k < varyCount && pool.length > 0; k++) {
+        const idx = pool.splice(Math.floor(rng() * pool.length), 1)[0];
         const strong = idx % 2 === 0;
         const target = contourTargetAt(mood, degrees.length + idx, degrees.length + rep.degrees.length + 4);
         rep.degrees[idx] = pickWeightedDegree(mood, strong, target, rng);
