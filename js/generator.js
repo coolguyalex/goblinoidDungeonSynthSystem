@@ -16,10 +16,23 @@ function cloneMotif(m) {
 
 // A degree is 'R' (rest), a number (single note), or an array (a chord — several
 // degrees stacked and sounded together, see moodLoader's parseDegreeToken).
-function transposeDegree(d, semitoneDegrees) {
+//
+// Chords are deliberately left untransposed here. `scaleSteps` shifts a scale-degree
+// NUMBER, not a semitone count — fine for a single melodic note (still lands on a
+// scale tone, just a different one), but a diatonic mode isn't symmetric, so shifting
+// every note of a chord by the same number of scale STEPS can change its acoustic
+// interval entirely: in G mixolydian, a root+4-steps dyad is a perfect 5th when rooted
+// on the tonic but a tritone when rooted 2 steps up (this is exactly what made Town's
+// "trompette" chord voice buzz in A-variation — a clean 5th became a tritone). There's
+// no chromatic-correction fix available without notes outside the mode, so instead
+// chords simply hold their originally-authored pitch when a section falls back to this
+// generic transpose rule. That's also the musically right call for a harmony/drone
+// voice specifically: it should stay anchored while the single-note melody is what
+// moves for a "variation" section.
+function transposeDegree(d, scaleSteps) {
   if (d === 'R') return 'R';
-  if (Array.isArray(d)) return d.map((x) => x + semitoneDegrees);
-  return d + semitoneDegrees;
+  if (Array.isArray(d)) return d;
+  return d + scaleSteps;
 }
 
 function findMotif(mood, voice, sectionName) {

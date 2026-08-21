@@ -13,11 +13,18 @@
 # v2 revision note: v1 was basically the graveyard track minus the minor key - bland,
 # uncommitted. Rebuilt around an actual hurdy-gurdy model: bass holds a true drone DYAD
 # (tonic+5th, sustained the whole section - the instrument's drone strings), chords
-# becomes the 'trompette' - short buzzy rhythmic stabs on the tonic (the bridge that
+# becomes the 'trompette' - short rhythmic stabs on the tonic (the bridge that
 # mechanically buzzes in time with the crank), and lead carries an original jig-style
 # tune (built from short repeating 2-bar dance cells, not a transcription of any real
 # tune - inspired by the phrasing of trad jigs like "Swallowtail Jig", not a copy of one).
-# Sawtooth waveforms throughout give the buzzy, reedy hurdy-gurdy timbre.
+#
+# v2.1 fix: bass/chords were raw sawtooth, which (with no filter node available in this
+# Web-Audio-primitives-only build) read as harsh/buzzy on a sustained drone rather than
+# a controlled hurdy-gurdy buzz. Moved to triangle (bass, smooth foundation) and square
+# (chords, still has some reedy edge for the trompette-stab character, without
+# sawtooth's full harmonic brightness). Lead keeps sawtooth - its notes are short and
+# melodic, not sustained, so the brightness helps the tune cut through instead of
+# reading as harsh. Sawtooth is otherwise reserved for short accents, not drones.
 type,key,value,degree,weight_strong,weight_weak,max_leap,resolve_direction,voice,low_note,high_note,waveform,gain,vibrato_rate,vibrato_depth,motif_id,section,degrees,rhythm
 meta,tonic,G2,,,,,,,,,,,,,,,,
 meta,mode,mixolydian,,,,,,,,,,,,,,,,
@@ -32,8 +39,8 @@ interval_weight,,,3,12,14,,,,,,,,,,,,,
 interval_weight,,,4,22,17,,,,,,,,,,,,,
 interval_weight,,,5,6,12,,,,,,,,,,,,,
 interval_weight,,,6,8,13,,,,,,,,,,,,,
-register,,,,,,,,bass,G1,D2,sawtooth,0.16,,,,,,
-register,,,,,,,,chords,G2,D3,sawtooth,0.10,7,20,,,,
+register,,,,,,,,bass,G1,D2,triangle,0.18,,,,,,
+register,,,,,,,,chords,G2,D3,square,0.09,7,20,,,,
 register,,,,,,,,lead,G3,G4,sawtooth,0.15,,,,,,
 register,,,,,,,,rhythm,G3,G4,square,0.06,,,,,,
 seed_motif,,,,,,,,bass,,,,,,,b1,intro,0+4,8
