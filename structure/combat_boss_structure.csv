@@ -5,11 +5,11 @@
 # 'break' is new in v2: a sudden drop-out of the driving pulse into a big, high,
 # resolved melodic contrast section (the 'solo' voice), before B slams the drive back in.
 type,section,bars,next,voice_id,active,section_end,cadence_type
-section_sequence,intro,8,A,,,,
-section_sequence,A,16,A-variation,,,,
-section_sequence,A-variation,16,break,,,,
-section_sequence,break,12,B,,,,
-section_sequence,B,16,fade,,,,
+section_sequence,intro,16,A,,,,
+section_sequence,A,32,A-variation,,,,
+section_sequence,A-variation,32,break,,,,
+section_sequence,break,24,B,,,,
+section_sequence,B,32,fade,,,,
 section_sequence,fade,8,,,,,
 voice_activity,intro,,,bass,1,,
 voice_activity,intro,,,chords,0,,
